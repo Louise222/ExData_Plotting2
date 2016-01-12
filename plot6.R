@@ -7,13 +7,8 @@ SCC <- readRDS("Source_Classification_Code.rds")
 # from motor vehicle sources in Los Angeles County, California.
 library(dplyr)
 library(ggplot2)
-Two_city<-filter(NEI,fips=="06037"|fips=="24510")
-combined<-left_join(Two_city,SCC,by="SCC")
-combined<-combined[,c(1:6,8)]
-combined[,5]<-tolower(sub("-","",combined[,5]))
-combined[,7]<-tolower(combined[,7])
-combined_motor<-combined[grep("motor",combined[,7]),]
-motor_group<-group_by(combined_motor,fips,year)
+Two_city<-filter(NEI,fips=="06037"|fips=="24510",type=="ON-ROAD")
+motor_group<-group_by(Two_city,fips,year)
 motor_year<-summarize_each(motor_group,funs(sum(Emissions,na.rm=TRUE)))
 png(filename = "plot6.png", width = 480, height = 480, units = "px")
 g<-ggplot(motor_year,aes(year,Emissions,color=fips))
